@@ -1,42 +1,35 @@
 # sql-fundamentals
 
 ## Setup
-[Download for Windows / Linux](https://www.sqlite.org/download.html)
-```
-sqlite3
-```
-```
-.headers on
-```
-```
-.mode column
-```
+For mac - [install homebrew](https://brew.sh/), then run `brew install postgres`
+
+For windows- [Installer](https://www.postgresql.org/download/windows/)
+
+After installation open terminal and run `psql postgres`
 
 ### Step 1 - Creating a Table
 
 ```
 create table Users (
     create_date date,
+    user_handle uuid,
     last_name text,
-    first_name text,
-    email text
+    first_name text
 );
 ```
-
-[More on types](https://www.journaldev.com/16774/sql-data-types#sql-numeric-data-types)
 
 ### Step 2 - Adding Data
 
 ```
-insert into Users (create_date, last_name, first_name, email) values ('2018-06-06', 'clark', 'tyler', 'tyler@gmail.com');
+insert into Users (create_date, user_handle, last_name, first_name ) values ('2018-06-06', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'clark', 'tyler');
 ```
 
 ```
-insert into Users values ('2018-08-20', 'Jones', 'Bob', 'bob@gmail.com');
+insert into Users values ('2019-01-10', uuid_generate_v4(), 'johnson', 'patrick');
 ```
 
 ```
-insert into Users values (date('now'), 'Jones', 'Bob', 'bob@gmail.com');
+insert into Users values (now(), 'Jones', 'Bob', 'bob@gmail.com');
 ```
 
 ### Step 3 - Selecting Data
@@ -45,12 +38,14 @@ insert into Users values (date('now'), 'Jones', 'Bob', 'bob@gmail.com');
 select * from Users;
 ```
 ```
-select first_name, last_name, date('now') from Users;
+select first_name, last_name, current_time from Users;
 ```
 ```
-select first_name as FirstName, last_name as LastName, date('now') as today from Users;
+select first_name as FirstName, last_name as LastName, current_time as today from Users;
 ```
-
+```
+select distinct(last_name) from Users;
+```
 ### Step 4 - Updating Data
 
 ```
@@ -66,7 +61,6 @@ delete from Users where last_name = 'Jones';
 ```
 truncate table Users;
 ```
-*truncate Does not work in SQLite, just use delete without filter*
 ```
 drop table Users;
 ```
@@ -76,35 +70,27 @@ drop table Users;
 ```
 create table Users (
     create_date date,
+    user_handle uuid,
     last_name text,
-    first_name text,
-    email text,
-    constraint PK_Users primary key (email)
+    first_name text
+    constraint PK_Users primary key (user_handle)
 );
 ```
 
 ```
 create table Users (
-    create_date date,
+    create_date date not null,
+    user_handle uuid not null,
     last_name text,
-    first_name text not null,
-    email text,
-    constraint PK_Users primary key (email)
+    first_name text not null
+    constraint PK_Users primary key (user_handle)
 );
 ```
 
 ### Step 7 - Working with Indexes
 
 ```
-create index create_dates ON Users (create_date);
-```
-
-```
-.indexes Users
-```
-
-```
-drop index create_date;
+create index test1_user_handle_index ON Users (user_handle);
 ```
 
 ### Step 8 - Aggregate functions and grouping data
@@ -126,15 +112,22 @@ select count(*), last_name from Users group by last_name;
 ```
 select create_date, last_name, first_name from Users where  last_name = 'clark';
 ```
+```
+select * from Users where create_date between '2018-05-01' and '2018-09-01';
+```
 
 ### Step 10 - Joining Tables
 
 ```
-create table Purchases (email text, order_number text, item text, cost int, date datetime);
+create table Purchases (date date, user_handle uuid, sku uuid, quantity int);
 ```
 
 ```
-insert into Purchases (email, order_number, item, cost, date) values ('tyler@gmail.com', '111-222-3121', 'razors', 23.20, '2019-01-12 12:30:12');
+insert into Purchases (date, user_handle, sku, quantity) values ('2018-12-12', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', uuid_generate_v4(), 2);
+```
+
+```
+insert into Purchases values ('2019-02-02', uuid_generate_v4(), uuid_generate_v4(), 1);
 ```
 
 ```
