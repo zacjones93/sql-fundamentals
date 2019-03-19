@@ -28,10 +28,6 @@ insert into Users (create_date, user_handle, last_name, first_name ) values ('20
 insert into Users values ('2019-01-10', uuid_generate_v4(), 'johnson', 'patrick');
 ```
 
-```
-insert into Users values (now(), 'Jones', 'Bob', 'bob@gmail.com');
-```
-
 ### Step 3 - Selecting Data
 
 ```
@@ -72,7 +68,7 @@ create table Users (
     create_date date,
     user_handle uuid,
     last_name text,
-    first_name text
+    first_name text,
     constraint PK_Users primary key (user_handle)
 );
 ```
@@ -80,10 +76,9 @@ create table Users (
 ```
 create table Users (
     create_date date not null,
-    user_handle uuid not null,
+    user_handle uuid not null unique,
     last_name text,
     first_name text not null
-    constraint PK_Users primary key (user_handle)
 );
 ```
 
